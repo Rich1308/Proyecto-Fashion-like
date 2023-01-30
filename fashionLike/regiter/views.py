@@ -27,12 +27,11 @@ def myform(request):
 
 def showform(request):
     template = loader.get_template("regiter/myform.html")
-    mu = 1
-    context = {"mu": mu,}
+    context = None
     return HR(template.render(context,request))
 
 def showformregister(request):
     template = loader.get_template("regiter/myformreg.html")
-    mu = 1
-    context = {"mu": mu,}
+    context = None
     return HR(template.render(context,request))
+

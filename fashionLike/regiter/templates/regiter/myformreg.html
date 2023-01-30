@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>My test page36</title>
+  </head>
+  <body>
+    <form action="{% url 'regiter:myform' %}" method="POST">
+        {% csrf_token %}
+        <fieldset>
+        <legend><h1>Query the name</h1></legend>
+        <input type="text" name = "first_name" >
+        <label for="nam">First Name</label>
+        <input type="text" name = "last_name" >
+        <label for="nam">last Name</label>
+        <input type="text" name = "username" >
+        <label for="nam">User </label>
+        <input type="text" name = "password" >
+        <label for="nam">password</label>
+        <input type="text" name = "email" >
+        <label for="nam">email</label>
+        </fieldset>
+    <input type="submit" value="query user">
+    </form>
+</body>
+</html>

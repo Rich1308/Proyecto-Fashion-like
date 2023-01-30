@@ -23,10 +23,16 @@ def myform(request):
     email = request.POST['email']
     passwd = request.POST['password']
     adduser(user,first_N,last_N,email,passwd)
-    return 0
+    return HR("the register was succesful")
 
 def showform(request):
     template = loader.get_template("regiter/myform.html")
+    mu = 1
+    context = {"mu": mu,}
+    return HR(template.render(context,request))
+
+def showformregister(request):
+    template = loader.get_template("regiter/myformreg.html")
     mu = 1
     context = {"mu": mu,}
     return HR(template.render(context,request))

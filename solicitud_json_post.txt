@@ -1,0 +1,20 @@
+Method: POST
+File type: Json
+
+Body request:
+
+{
+  "First_Name":"First_Name", 
+  "Last_Name":"Last_Name",
+  "user":"user",
+  "password":"password",
+  "email":"email",
+  "country":"country"
+  
+}
+
+if all is well there retun:
+{ "message": "success" }
+
+if there is any issue retun:
+{ "message": "error" }

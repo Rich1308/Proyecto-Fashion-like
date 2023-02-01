@@ -1,5 +1,5 @@
 #from django.shortcuts import render
-#from django.http import HttpResponse as HR
+from django.http import HttpResponse as HR
 from .models import adduser
 from django.template import loader
 #Fuction for check user and password 
@@ -66,3 +66,7 @@ class Fashion_like(View):
     def delete(self,request):
         pass
 
+def index(request):
+    template = loader.get_template("regiter/index.html")
+    context = None
+    return HR(template.render(context,request)) 

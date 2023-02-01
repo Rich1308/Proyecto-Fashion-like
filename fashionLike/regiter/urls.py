@@ -10,4 +10,5 @@ urlpatterns = [
     #path("showform/",views.showform,name="showform"),
     #path("myformreg/",views.showformregister,name="showformreg"),
     path("register/",Fashion_like.as_view(),name="register"),
+    path("",views.index,name="index"),
 ]

@@ -39,6 +39,26 @@ def showformregister(request):
     template = loader.get_template("regiter/myformreg.html")
     context = None
     return HR(template.render(context,request))"""
+
+def Real(name,di):
+    """Fuction to review the data  that come from request"""
+    a = di[name]
+    if not isinstance(a,str):
+        return False
+    if len(a) == 0:
+        return False
+    if a.isspace():
+        return False
+    if name == "First_Name" or name == "Last_Name" or name== "country":
+        if not a.isalpha():
+            return False
+    if name == "password":
+        if len(a) < 8 or len(a)>15:
+            return False 
+    return True
+
+
+    
 class Fashion_like(View):
 
     @method_decorator(csrf_exempt)
@@ -51,11 +71,15 @@ class Fashion_like(View):
     def post(self,request):
         try:
             js = json.loads(request.body)
-            adduser.objects.create(First_Name=js["First_Name"],Last_Name=js["Last_Name"],user=js["user"],password=js["password"],email=js["email"],country=js["country"])
-            data = {
-                "message":"success 200", 
-            }
-            return JR(data)
+            if Real("First_Name",js) and Real("Last_Name",js) and Real("user",js) and Real("password",js) and Real("email", js) and  Real("email",js) and Real("country",js):
+                adduser.objects.create(First_Name=js["First_Name"],Last_Name=js["Last_Name"],user=js["user"],password=js["password"],email=js["email"],country=js["country"])
+                data = {
+                    "message":"success 200", 
+                }
+                return JR(data)
+            else:
+                data = {"message": "error in the data"}
+                return data
         except:
             data = {"message":"error"}
             return JR(data)

@@ -1,6 +1,6 @@
 #from django.shortcuts import render
 from django.http import HttpResponse as HR , HttpResponseBadRequest as HBR
-from .models import adduser
+from .models import adduser,Country,Authuser
 from django.template import loader
 #Fuction for check user and password 
 from django.contrib.auth import authenticate, login
@@ -9,37 +9,6 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views import View
 import json
-
-
-"""
-def my_view(request):
-    username = request.POST['username']
-    password = request.POST['password']
-    user = authenticate(request, username=username, password=password)
-    if user is not None:
-        login(request, user)
-        return HR("The user exist")
-    else:
-        return HR("The usern no exist")
-
-def myform(request):
-    user= request.POST['username']
-    first_N = request.POST['first_name']
-    last_N = request.POST['last_name']
-    email = request.POST['email']
-    passwd = request.POST['password']
-    adduser(user,first_N,last_N,email,passwd)
-    return HR("the register was succesful")
-
-def showform(request):
-    template = loader.get_template("regiter/myform.html")
-    context = None
-    return HR(template.render(context,request))
-
-def showformregister(request):
-    template = loader.get_template("regiter/myformreg.html")
-    context = None
-    return HR(template.render(context,request))"""
 
 def Real(name,di):
     """Fuction to review the data  that come from request"""
@@ -100,21 +69,27 @@ class Fashion_like(View):
         try:
             js = json.loads(request.body)
             if Real("First_Name",js) and Real("Last_Name",js) and Real("user",js) and Real("password",js) and Real("email", js) and  Real("email",js) and Real("country",js):
-                adduser.objects.create(First_Name=js["First_Name"],Last_Name=js["Last_Name"],user=js["user"],password=js["password"],email=js["email"],country=js["country"])
+                print("error aqui")
+                l_country = js["country"].lower()
+                country2 = Country.objects.get(country=l_country).id
+                print("PAso")
+                #if Authuser.objects.get(user=js["user"]).id == 0:
+                Authuser.objects.create(user=js["user"],password=js["password"])
+                print("PAso2")
+                user2 = Authuser.objects.get(user=js["user"]).id
+                print("PAso3",type(user2))
+                adduser.objects.create(First_Name=js["First_Name"],Last_Name=js["Last_Name"],email=js["email"],country_id=country2,user_id=user2)
+                print("PAso4")
                 data = {
                     "message":"success 200",
                     "description":"the data was record successfuly" 
                 }
                 return JR(data)
             else:
-                #data = {
-                 #   "message": "error in the data", 
-                  #  "error":"400"
-                #}
+        
                 return HBR('Erron in the data, some data no match with the format required', status=400)
         except:
-            data = {"message":"error"}
-            return JR(data)
+            return HBR('Erron in the api', status=500)
 
     def path(self,request):
         pass

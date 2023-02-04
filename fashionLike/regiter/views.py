@@ -73,18 +73,23 @@ class Fashion_like(View):
                 l_country = js["country"].lower()
                 country2 = Country.objects.get(country=l_country).id
                 print("PAso")
-                #if Authuser.objects.get(user=js["user"]).id == 0:
-                Authuser.objects.create(user=js["user"],password=js["password"])
-                print("PAso2")
-                user2 = Authuser.objects.get(user=js["user"]).id
-                print("PAso3",type(user2))
-                adduser.objects.create(First_Name=js["First_Name"],Last_Name=js["Last_Name"],email=js["email"],country_id=country2,user_id=user2)
-                print("PAso4")
-                data = {
-                    "message":"success 200",
-                    "description":"the data was record successfuly" 
-                }
-                return JR(data)
+                if Authuser.objects.filter(user=js["user"]).exists()==False:
+                    Authuser.objects.create(user=js["user"],password=js["password"])   
+                    print("PAso2")
+                    user2 = Authuser.objects.get(user=js["user"]).id
+                    print("PAso3",type(user2))
+                    adduser.objects.create(First_Name=js["First_Name"],Last_Name=js["Last_Name"],email=js["email"],country_id=country2,user_id=user2)
+                    print("PAso4")
+                    data = {
+                        "message":"success 200",
+                        "description":"the data was record successfuly" 
+                    }
+                    return JR(data)
+                
+                else:
+
+                    return HBR('Error, The user already is exist', status=400)
+                    
             else:
         
                 return HBR('Erron in the data, some data no match with the format required', status=400)

@@ -9,6 +9,7 @@ urlpatterns = [
     #path("myform/",views.myform,name="myform"),
     #path("showform/",views.showform,name="showform"),
     #path("myformreg/",views.showformregister,name="showformreg"),
-    path("register/",Fashion_like.as_view(),name="register"),
+    path("Fashion/",Fashion_like.as_view(),name="register"),
+    path("Fashion/<int:id>/",Fashion_like.as_view(),name="onedata"),
     path("",views.index,name="index"),
 ]

@@ -54,7 +54,6 @@ def Real(name,di):
         return False
     return True
 
-
     
 class Fashion_like(View):
 
@@ -62,24 +61,49 @@ class Fashion_like(View):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
-    def get(self,request):
-        pass
+    def get(self,request,id=None):
+        people = list(adduser.objects.values())
+        #print (adduser.objects.values())
+        if id != None:
+            #"First_Name","Last_Name","user","email","country"
+            if id<1:
+                return HBR('Error, in the request, this resource not exist', status=404)
+            else:
+              
+                person = list(adduser.objects.filter(id=id).values())
+                if len(person)==0:
+                    return  HBR('Error, in the request, this resource not exist', status=404)
+                data = {
+                        "message":"success 200",
+                        "data":person 
+                    }
+                return JR(data)
+
+        if len(people)>0:
+            data = {
+                "message":"success 200",
+                 "datapeople":people}
+            return JR(data)
+        else:   
+            return HBR('Error, in the request', status=400)
+        
 
     def post(self,request):
+
         try:
             js = json.loads(request.body)
             if Real("First_Name",js) and Real("Last_Name",js) and Real("user",js) and Real("password",js) and Real("email", js) and  Real("email",js) and Real("country",js):
-                print("error aqui")
+                #print("error aqui")
                 l_country = js["country"].lower()
                 country2 = Country.objects.get(country=l_country).id
-                print("PAso")
+                #print("PAso")
                 if Authuser.objects.filter(user=js["user"]).exists()==False:
                     Authuser.objects.create(user=js["user"],password=js["password"])   
-                    print("PAso2")
+                    #print("PAso2")
                     user2 = Authuser.objects.get(user=js["user"]).id
-                    print("PAso3",type(user2))
+                    #print("PAso3",type(user2))
                     adduser.objects.create(First_Name=js["First_Name"],Last_Name=js["Last_Name"],email=js["email"],country_id=country2,user_id=user2)
-                    print("PAso4")
+                    #print("PAso4")
                     data = {
                         "message":"success 200",
                         "description":"the data was record successfuly" 

@@ -54,6 +54,21 @@ def Real(name,di):
         return False
     return True
 
+def myinner(person,user_id,countri_id,i=0):
+    num1=person[i][user_id]
+    num2=person[i][countri_id]
+    newUs=list(Authuser.objects.filter(id=num1).values("user"))
+    newUs2=list(Country.objects.filter(id=num2).values("country"))
+    person[i][user_id] = newUs[0]["user"]
+    person[i][countri_id] = newUs2[0]["country"]
+
+def myinner_better(person,value_id,classe,value,i=0):
+    num1=person[i][value_id]
+    newUs=list(classe.objects.filter(id=num1).values(value))
+    person[i][value_id] = newUs[0][value]
+    """fuction  to make inner join"""
+    
+
     
 class Fashion_like(View):
 
@@ -62,36 +77,63 @@ class Fashion_like(View):
         return super().dispatch(request, *args, **kwargs)
 
     def get(self,request,id=None):
-        people = list(adduser.objects.values())
+        try:
+            people = list(adduser.objects.values())
         #print (adduser.objects.values())
-        if id != None:
+            if id != None:
             #"First_Name","Last_Name","user","email","country"
-            if id<1:
-                return HBR('Error, in the request, this resource not exist', status=404)
-            else:
+                if id<1:
+                    return HBR('Error, in the request, this resource not exist', status=404)
+                else:
               
-                person = list(adduser.objects.filter(id=id).values())
-                if len(person)==0:
-                    return  HBR('Error, in the request, this resource not exist', status=404)
-                data = {
-                        "message":"success 200",
-                        "data":person 
-                    }
-                return JR(data)
+                    person = list(adduser.objects.filter(id=id).values())
+                    #fuction created for my to make inner join
+                    myinner_better(person,"user_id",Authuser,"user")
+                    myinner_better(person,"country_id",Country,"country")
+                    if len(person)==0:
+                        return  HBR('Error, in the request, this resource not exist', status=404)
+                    data = {
+                            "message":"success 200",
+                            "data":person 
+                        }
+                    return JR(data)
 
-        if len(people)>0:
-            data = {
-                "message":"success 200",
-                 "datapeople":people}
-            return JR(data)
-        else:   
-            return HBR('Error, in the request', status=400)
-        
+            if len(people)>0:
+                for i in range(len(people)):
+                    #myinner(people,"user_id","country_id",i)
+                    myinner_better(people,"user_id",Authuser,"user",i)
+                    myinner_better(people,"country_id",Country,"country",i)
+                data = {
+                    "message":"success 200",
+                    "datapeople":people}
+                return JR(data)
+            else:   
+                return HBR('Error, in the request', status=400)
+        except:
+            return HBR('Error, in the request,resource no found', status=404)
 
     def post(self,request):
 
         try:
             js = json.loads(request.body)
+            print("1")
+            if "user_A" in js and "password_A" in js:
+                print("2")
+                if not Authuser.objects.filter(user=js["user_A"]).exists() or not Authuser.objects.filter(password=js["password_A"]).exists():
+                    return HBR('Error, user or password wrong ', status=403)
+
+                u=list(Authuser.objects.filter(user=js["user_A"]).values("user"))
+                p=list(Authuser.objects.filter(password=js["password_A"]).values("password"))
+                #print(u[0]["user"],p[0]["password"])
+                                      
+                data = {
+                        "message":"success 200",
+                        "description":"the user was login successfuly" 
+                      }
+                        
+                return JR(data)
+
+
             if Real("First_Name",js) and Real("Last_Name",js) and Real("user",js) and Real("password",js) and Real("email", js) and  Real("email",js) and Real("country",js):
                 #print("error aqui")
                 l_country = js["country"].lower()

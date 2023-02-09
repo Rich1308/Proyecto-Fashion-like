@@ -9,6 +9,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views import View
 import json
+import hashlib
+import random
 
 def Real(name,di):
     """Fuction to review the data  that come from request"""
@@ -125,10 +127,12 @@ class Fashion_like(View):
                 u=list(Authuser.objects.filter(user=js["user_A"]).values("user"))
                 p=list(Authuser.objects.filter(password=js["password_A"]).values("password"))
                 #print(u[0]["user"],p[0]["password"])
-                                      
+                alet = random.random()
+                my_token = hashlib.sha256((js["user_A"]+str(alet)).encode()).hexdigest()                      
                 data = {
                         "message":"success 200",
-                        "description":"the user was login successfuly" 
+                        "description":"the user was login successfuly", 
+                        "token" : my_token,
                       }
                         
                 return JR(data)
